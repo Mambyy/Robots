@@ -27,24 +27,32 @@ public class MainApplicationFrame extends JFrame {
         setContentPane(desktopPane);
 
         LogWindow logWindow = createLogWindow();
+        WindowStateKeeper.restoreState(logWindow);
         addWindow(logWindow);
 
         GameWindow gameWindow = new GameWindow();
         gameWindow.setSize(400, 400);
+        WindowStateKeeper.restoreState(gameWindow);
         addWindow(gameWindow);
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 int answer = JOptionPane.showConfirmDialog(
-                        MainApplicationFrame.this,
+                        desktopPane,
                         "Уверены, что хотите выйти из игры?",
                         "Окно подтверждения",
                         JOptionPane.YES_NO_OPTION,
                         JOptionPane.QUESTION_MESSAGE
                 );
                 if (answer == JOptionPane.YES_OPTION){
-                    MainApplicationFrame.this.setVisible(false);
-                    MainApplicationFrame.this.dispose();
+                    WindowStateKeeper.Saver saver = new WindowStateKeeper.Saver();
+                    saver.save(gameWindow);
+                    saver.save(logWindow);
+                    int operationCode = saver.write(MainApplicationFrame.this);
+                    if (operationCode == 0) {
+                        MainApplicationFrame.this.dispose();
+                        setDefaultCloseOperation(EXIT_ON_CLOSE);
+                    }
                 }
 
             }

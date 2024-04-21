@@ -8,7 +8,6 @@ import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -72,8 +71,7 @@ public class GameVisualizer extends JPanel
 
     protected void onRedrawEvent()
     {
-        Runnable runnable = this::repaint;
-        runnable.run();
+        EventQueue.invokeLater(this::repaint);
     }
 
     private static double distance(double x1, double y1, double x2, double y2)
